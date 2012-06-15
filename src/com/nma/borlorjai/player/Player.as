@@ -3,10 +3,17 @@ package com.nma.borlorjai.player
 	/**
 	 * @author Nick
 	 */
-	import org.flixel.FlxSprite;
 	
-	public class Player extends FlxSprite
+	public class Player
 	{
 		
+		private var playerStage:int;
+		private var puzzleCompleted:int;
+		
+		
+		public function Player()
+		{
+			
+		}
 	}
 }

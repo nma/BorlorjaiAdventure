@@ -4,7 +4,9 @@ package com.nma.borlorjai {
 	 * @author Nick
 	 */
 	public class GameAssets {
-		[Embed(source = "../build/assets/puzzle_1_bg.png")] 
+		[Embed(source = "/../build/assets/puzzle_1_bg.png")] 
 		public static var PUZZLE_BG:Class;
+		
+		
 	}
 }
