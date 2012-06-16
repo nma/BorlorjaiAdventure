@@ -13,8 +13,8 @@ package
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Matrix;
+	import flash.geom.Point;
 	import flash.geom.Rectangle;
-	
 	
 	/**
 	 * @author Nick
@@ -89,16 +89,16 @@ package
 			{
 				case "button_1":
 				{
-					_lockBox.gotoAndStop(_lockBox.currentFrame+1);
+					//_lockBox.gotoAndStop(_lockBox.currentFrame+1);
 					rotateGear(_gearSet.gear7_r,7,_gearSet.gear16,16);
 					break;
 				}
 				case "button_2":
 				{
-					if (_lockBox.currentFrame-1 > 0 ) {
+					/*if (_lockBox.currentFrame-1 > 0 ) {
 						_lockBox.gotoAndStop(_lockBox.currentFrame-1);
-					}
-					
+					}*/
+					rotateGear(_gearSet.gear7_l, 7, _gearSet.gear20,20);
 					break;
 				}
 				default:
@@ -108,10 +108,46 @@ package
 			}
 		}
 		
-		private function rotateGear(gear1:MovieClip, g1_teeth:int, gear2:MovieClip, g2_teeh:int):void
+		private function rotateGear(gear1:MovieClip, g1_teeth:int, gear2:MovieClip, g2_teeth:int):void
 		{
+			// get matrix object from your MovieClip
+			var m:Matrix = gear1.transform.matrix;
+			
+			// set the point around which you want to rotate your MovieClip (relative to the MovieClip position)
+			var point:Point = new Point(0,1);
+			
+			// get the position of the MovieClip related to its origin and the point around which it needs to be rotated
+			point = m.transformPoint(point);
+			// set it
+			m.translate( -point.x, -point.y);
+			
+			// rotate it of 30°
+			m.rotate((180/g1_teeth) * (Math.PI / 180));
+			
+			// and get back to its "normal" position
+			m.translate(point.x, point.y);
+			
+			// finally, to set the MovieClip position, use this
+			gear1.transform.matrix = m;
+			
+			// or this
+			/*gear1.x = m.tx;
+			gear1.y = m.ty;
+			gear1.rotation += 30;*/
+		
+						
+			var m2:Matrix = gear2.transform.matrix;
+			var point2:Point = new Point(0, 0);
+			point2 = m2.transformPoint(point2);
+			m2.translate( -point2.x, -point2.y);
+			m2.rotate((180/g2_teeth) * (Math.PI / 180));
+			m2.translate(point2.x, point2.y);
+			gear2.transform.matrix = m2;
+			
 			
 		}
+		
+		
 		
 		/**
 		* cropBitmap
