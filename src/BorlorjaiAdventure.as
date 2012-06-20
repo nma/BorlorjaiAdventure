@@ -29,12 +29,16 @@ package
 		private var _buttons:button_bar;
 		private var _lockBox:lock_box;
 		private var _gearSet:gear_set;
+		private var _lockHole:lock_hole;
 		
 		private var _gameWidth:int;
 		private var _gameHeight:int;
 		
 		private var _menuHeight:int;
 		private var _netGameHeight:int;
+		
+		private var _top_lock_position:int;
+		
 		
 		
 		public function BorlorjaiAdventure():void
@@ -71,7 +75,14 @@ package
 			
 			_gearSet = new gear_set();
 			_gearSet.x = 340;
-			_gearSet.y = _gearSet.height/2 - 90;	
+			_gearSet.y = _gearSet.height/2 - 90;
+			
+			_lockHole = new lock_hole();
+			_lockHole.scaleX = 0.7;
+			_lockHole.scaleY = 0.7;
+			_lockHole.x = 320; 
+			_lockHole.y = 342;	
+			_lockHole.addEventListener(MouseEvent.MOUSE_DOWN, pressHandler);
         }
 		
 		private function populateViews():void
@@ -80,7 +91,30 @@ package
 			addChild(_myBGBitmap);
 			addChild(_buttons);
 			addChild(_lockBox);
+			addChild(_lockHole);
 		}
+		
+		private function pressHandler(e:Event):void {
+			e.target.addEventListener(MouseEvent.MOUSE_MOVE, moveHandler);
+			e.target.addEventListener(MouseEvent.MOUSE_UP, upHandler);
+		}
+		
+		private function moveHandler(e:Event):void {
+			var theGear:MovieClip = _gearSet.gear15;
+			var m2:Matrix = theGear.transform.matrix;
+			var point2:Point = new Point(0, 0);
+			point2 = m2.transformPoint(point2);
+			m2.translate( -point2.x, -point2.y);
+			m2.rotate((-90/15) * (Math.PI / 180));
+			m2.translate(point2.x, point2.y);
+			theGear.transform.matrix = m2;
+		}
+		
+		private function upHandler(e:Event):void {
+			e.target.removeEventListener(MouseEvent.MOUSE_UP, upHandler);
+			e.target.removeEventListener(MouseEvent.MOUSE_MOVE, moveHandler);
+		}
+		
 		
 		private function dialClickListener(e:MouseEvent):void 
 		{
@@ -88,23 +122,17 @@ package
 			switch (clickedDial)
 			{
 				case "button_1":
-				{
 					//_lockBox.gotoAndStop(_lockBox.currentFrame+1);
 					rotateGear(_gearSet.gear7_r,7,_gearSet.gear16,16);
 					break;
-				}
 				case "button_2":
-				{
 					/*if (_lockBox.currentFrame-1 > 0 ) {
 						_lockBox.gotoAndStop(_lockBox.currentFrame-1);
 					}*/
 					rotateGear(_gearSet.gear7_l, 7, _gearSet.gear20,20);
 					break;
-				}
 				default:
-				{
 					break;
-				}
 			}
 		}
 		
@@ -119,7 +147,7 @@ package
 			// get the position of the MovieClip related to its origin and the point around which it needs to be rotated
 			point = m.transformPoint(point);
 			// set it
-			m.translate( -point.x, -point.y);
+			m.translate( -point.x, -point.y );
 			
 			// rotate it of 30°
 			m.rotate((180/g1_teeth) * (Math.PI / 180));
@@ -140,13 +168,11 @@ package
 			var point2:Point = new Point(0, 0);
 			point2 = m2.transformPoint(point2);
 			m2.translate( -point2.x, -point2.y);
-			m2.rotate((180/g2_teeth) * (Math.PI / 180));
+			m2.rotate((-180/g2_teeth) * (Math.PI / 180));
 			m2.translate(point2.x, point2.y);
 			gear2.transform.matrix = m2;
-			
-			
 		}
-		
+	
 		
 		
 		/**
