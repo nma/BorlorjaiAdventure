@@ -41,6 +41,7 @@ package {
 			mGameEngine.mWidth = mGameWidth = stage.stageWidth;
 			mGameEngine.mHeight = mGameHeight = stage.stageHeight;
 			mGameEngine.mFrameRate = stage.frameRate;
+			mGameEngine.mMaxAltitude = 125;
 			
 			// stage settings
 			stage.align = StageAlign.TOP_LEFT;
@@ -75,6 +76,17 @@ package {
 			mButtonBar = new ui_button();
 			mButtonBar.x = mGameWidth - mButtonBar.width - 16;
 			mButtonBar.y = mGameHeight - mButtonBar.height - 12;
+			
+			mPlayer.mPlane;
+			mPlayer.mPlane.x = mGameWidth/2;
+			mPlayer.mPlane.y = mGameHeight;
+			mPlayer.mPlane.stop();
+			
+			mPlayer.mLaunchPad;
+			mPlayer.mLaunchPad.x = mPlayer.mLaunchPad.width/2 + 30;
+			mPlayer.mLaunchPad.y = mSkyBG.height - mPlayer.mLaunchPad.height - 40;
+			mPlayer.mLaunchPad._scaffold.stop();
+			//mPlayer.mLaunchPad._scaffold.addEventListener(type, listener);
 		}
 		
 		private function populateViews():void {
@@ -82,24 +94,26 @@ package {
 			addChild(mUIBar);
 			addChild(mFuelBar);
 			addChild(mButtonBar);
+			addChild(mPlayer.mPlane);
+			mSkyBG.addChild(mPlayer.mLaunchPad);
 		}
 		
 		public function onKeyDown(event:KeyboardEvent):void {
 			switch (event.keyCode) {
 				case Keyboard.LEFT: {
-					mPlayer.mVx = mPlayer.mVx - 5 >= 0 ? mPlayer.mVx - 5 : 0;
+					mPlayer.mVx = mPlayer.mVx - 1 >= 0 ? mPlayer.mVx - 1 : 0;
 					break;
 				}
 				case Keyboard.RIGHT: {
-					mPlayer.mVx += 5;
+					mPlayer.mVx += 1;
 					break;
 				}
 				case Keyboard.UP: {
-					mPlayer.mAlt += 5;
+					mPlayer.mVy += 1;
 					break;
 				}
 				case Keyboard.DOWN: {
-					mPlayer.mAlt -= 5;
+					mPlayer.mVy -= 1;
 					break;
 				}
 				default: break;
@@ -113,20 +127,23 @@ package {
 					//mPlayer.mVx = 0;
 					break;
 				}
+				case Keyboard.UP: {}
+				case Keyboard.DOWN: {
+					break;
+				}
 				default:break;
 			}
 		}
 		
 		public function onEnterFrame(event:Event):void {
 			updateUI();
-			mGameEngine.parallaxScreen(mSkyBG._ground,1,mPlayer.mVx);
-			mGameEngine.parallaxScreen(mSkyBG._skyline,2,mPlayer.mVx);
-			mGameEngine.parallaxScreen(mSkyBG._clouds,5,mPlayer.mVx);
-			mGameEngine.parallaxScreen(mSkyBG._stars,15,mPlayer.mVx);
-			mGameEngine.adjustHeight(mSkyBG,mPlayer.mAlt);
+			mGameEngine.tickBackground(mSkyBG,mPlayer);
+			
 		}
 		
 		public function updateUI():void {
+			//mPlayer.mDist += mPlayer.mVx/stage.frameRate;
+			
 			mUIBar._spdText.text = mPlayer.mVx.toFixed(2)+"m/s";
 			mUIBar._altText.text = mPlayer.mAlt.toFixed(2)+"m";
 			mUIBar._dstText.text = mPlayer.mDist.toFixed(2)+"m";

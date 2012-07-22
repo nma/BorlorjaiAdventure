@@ -5,6 +5,14 @@ package com.nma.borlorjai
 	 * @author Nick
 	 */
 	
+	/**
+	 * Enumeration example
+	 * public final class PrintJobOrientation 
+		{ 
+		    public static const LANDSCAPE:String = "landscape"; 
+		    public static const PORTRAIT:String = "portrait"; 
+		}
+	 */
 	public class Player
 	{
 		// player accessibles
@@ -17,6 +25,8 @@ package com.nma.borlorjai
 		public var mVy:Number;
 		public var mDist:Number;
 		public var mAlt:Number;
+		
+		public var mAD:Number; // aerodynamic modifier
 		
 		private static var mInstance:Player;
 		private static var allowInstantiation:Boolean;
@@ -50,6 +60,8 @@ package com.nma.borlorjai
 			
 			mPlane = new Plane();
 			mLaunchPad = new LaunchPad();
+			
+			mAD = 0.0;
 		}
 		
 		public function vx():Number{

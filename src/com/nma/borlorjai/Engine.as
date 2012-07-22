@@ -7,11 +7,13 @@ package com.nma.borlorjai {
 		public var mWidth:int;
 		public var mHeight:int;
 		public var mFrameRate:int;
+		public var mMaxAltitude:Number;
 		
 		// game dependant variables
 		private static var mInstance:Engine;
 		private static var allowInstantiation:Boolean;
 		
+		// implement static singleton
 		public static function getInstance():Engine {
 			if (mInstance == null) {
 				allowInstantiation = true;
@@ -33,10 +35,42 @@ package com.nma.borlorjai {
 			mWidth = 0;
 			mHeight = 0;
 			mFrameRate = 0;
+			mMaxAltitude = 0;
+		}
+		
+		public function tickBackground(obj:sky_bg, user:Player):void {	
+			this.parallaxScreen(obj._ground,1,user.mVx);
+			this.parallaxScreen(obj._skyline,2,user.mVx);
+			this.parallaxScreen(obj._clouds,3.5,user.mVx);
+			this.parallaxScreen(obj._stars,15,user.mVx);
+			this.gravity(user);
+			this.adjustHeight(obj,user.mAlt);
+		}
+		
+		public function gravity(user:Player):void {
+			user.mVy -= (10/24 - user.mAD);
+			user.mPlane.y -= user.mVy;
+			
+			// plane travelling
+			if (user.mPlane.y - user.mVy >= (mHeight - user.mPlane.width/2 - 15)) {
+				user.mVy = 0;
+				user.mPlane.y = mHeight - user.mPlane.width/2 - 15;
+			} else if (user.mPlane.y - user.mVy <= mHeight/2) {
+				user.mPlane.y = mHeight/2;
+			}
+			
+			// set plane rotation
+			var rotation:Number = 0;
+			if (user.mVy != 0) {
+				rotation = Math.atan((user.mVx)/(-user.mVy)) * (180/Math.PI);
+			}
+			user.mDist = rotation;
+			user.mAlt = user.mVy;
+			//user.mPlane.rotation = rotation;
 		}
 		
 		public function parallaxScreen(obj:MovieClip, displacement:int, vx:Number, vy:Number=0):void {
-			obj.x += -vx / displacement;  
+			obj.x += -vx * mFrameRate / displacement;  
 			
 			if (obj.x + obj.width <= mWidth) {
 				obj.x = 0;
@@ -44,7 +78,7 @@ package com.nma.borlorjai {
 		}
 		
 		public function adjustHeight(obj:MovieClip, alt:Number):void {
-			obj.y += alt;
+			obj.y = (mHeight - obj.height) * (1 - (alt / mMaxAltitude)); 
 			
 			if (obj.y + obj.height <= mHeight) {
 				obj.y = mHeight - obj.height;
