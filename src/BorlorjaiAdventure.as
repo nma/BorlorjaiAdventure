@@ -1,4 +1,5 @@
 package {
+	import flash.globalization.NumberFormatter;
 	import com.nma.borlorjai.Engine;
 	import com.nma.borlorjai.scene.GameSceneManager;
 	import com.nma.borlorjai.Player;
@@ -37,8 +38,7 @@ package {
 			gameSceneManagerInstance = GameSceneManager.getInstance(this);
 
 			init();
-			bindViews();
-			populateViews();
+			bindAndPopulateViews();
 		}
 		
 		private function init():void {
@@ -81,9 +81,20 @@ package {
 			mPlayer.mPlane.y = mGameHeight - mPlayer.mPlane.width/2 - 130;
 			mPlayer.mPlane.rotation -= 4;
 			mPlayer.mPlane.stop();
+			
+			populateViews();
+		}
+		
+		private function populateViews():void {
+			addChild(mSkyBG);
+			addChild(mUIBar);
+			addChild(mFuelBar);
+			addChild(mButtonBar);
+			addChild(mPlayer.mPlane);
+			mSkyBG.addChild(mPlayer.mLaunchPad);
 		}
 				
-		private function bindViews():void {
+		private function bindAndPopulateViews():void {
 			mSkyBG = new sky_bg();
 			mUIBar = new ui_bar();
 			mUIBar.x = 0;
@@ -100,54 +111,37 @@ package {
 			reset();
 		}
 		
-		private function populateViews():void {
-			addChild(mSkyBG);
-			addChild(mUIBar);
-			addChild(mFuelBar);
-			addChild(mButtonBar);
-			addChild(mPlayer.mPlane);
-			mSkyBG.addChild(mPlayer.mLaunchPad);
-		}
-		
 		public function onKeyDown(event:KeyboardEvent):void {
 			switch (event.keyCode) {
 				case Keyboard.LEFT: {
-					if (mPlayer.isLaunch()) {
-						
-					} else {
+					if (!mPlayer.isLaunch()) {
 						mPlayer.mVx = mPlayer.mVx - 1 >= 0 ? mPlayer.mVx - 1 : 0;
 					}
 					break;
 				}
 				case Keyboard.RIGHT: {
-					if (mPlayer.isLaunch()) {
-						
-					} else {
+					if (!mPlayer.isLaunch()) {
 						mPlayer.mVx += 1;
 					}
 					break;
 				}
 				case Keyboard.UP: {
-					if (mPlayer.isLaunch()) {
-						
-					} else {
-						mPlayer.mVy += 1;
+					if (!mPlayer.isLaunch()) {
+						mPlayer.mVy += 2;
 					}
 					break;
 				}
 				case Keyboard.DOWN: {
-					if (mPlayer.isLaunch()) {
-						
-					} else {
-						mPlayer.mVy -= 1;
+					if (!mPlayer.isLaunch()) {
+						mPlayer.mVy -= 2;
 					}
 					break;
 				}
 				case Keyboard.SPACE: {
 					if (mPlayer.isLaunch()) {
 						mPlayer._GameState = mPlayer._Plane;
-						mPlayer.mVx = 10;
-						mPlayer.mVy = 15;
+						mPlayer.mVx += 10;
+						mPlayer.mVy += 20;
 					}
 					break;
 				}
@@ -173,9 +167,11 @@ package {
 			updateUI();
 			mGameEngine.tickBackground(mSkyBG,mPlayer);
 			// logic handle of launchPad
-			mGameEngine.parallaxScreen(mPlayer.mLaunchPad, 1, mPlayer.mVx);
 			if (mPlayer.isPlane()) {
-				if (mPlayer.mLaunchPad.x < mPlayer.mLaunchPad.x + mPlayer.mLaunchPad.width) {
+				mGameEngine.parallaxScreen(mPlayer.mLaunchPad, 1, mPlayer.mVx);
+				var padX:Number = mPlayer.mLaunchPad.x; 
+				var padW:Number = mPlayer.mLaunchPad.width;
+				if (padX < padX + padW) {
 					mSkyBG.removeChild(mPlayer.mLaunchPad);
 				}
 			}

@@ -48,7 +48,7 @@ package com.nma.borlorjai {
 		}
 		
 		public function gravity(user:Player):void {
-			if (user.isLaunch) {
+			if (user.isLaunch()) {
 				return;
 			}
 			user.mVy -= (10/24 - user.mAD);
