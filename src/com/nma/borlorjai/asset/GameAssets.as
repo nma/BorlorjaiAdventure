@@ -1,4 +1,4 @@
-package com.nma.borlorjai {
+package com.nma.borlorjai.asset {
 	import flash.utils.ByteArray;
 	/**
 	 * @author Nick

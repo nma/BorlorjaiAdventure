@@ -1,6 +1,8 @@
 package {
 	import com.nma.borlorjai.Engine;
+	import com.nma.borlorjai.scene.GameSceneManager;
 	import com.nma.borlorjai.Player;
+
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
@@ -24,12 +26,15 @@ package {
 		private var mFuelBar:ui_fuel;
 		private var mButtonBar:ui_button;
 		
+		public var gameSceneManagerInstance:GameSceneManager;
 		
 		public function BorlorjaiAdventure():void {
 			super();
 			// get game instances
 			mPlayer = Player.getInstance();
 			mGameEngine = Engine.getInstance();
+			
+			gameSceneManagerInstance = GameSceneManager.getInstance(this);
 
 			init();
 			bindViews();
@@ -58,13 +63,28 @@ package {
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
+		
+		}
+		
+		public function reset():void {
+			mPlayer._GameState = mPlayer._LaunchPad;
+			
+			mSkyBG.x = 0;
+			mSkyBG.y = mGameHeight - mSkyBG.height;
+			
+			mPlayer.mLaunchPad.x = mPlayer.mLaunchPad.width/2 + 30;
+			mPlayer.mLaunchPad.y = mSkyBG.height - mPlayer.mLaunchPad.height - 50;
+			mPlayer.mLaunchPad._scaffold.rotation -= 4;
+			mPlayer.mLaunchPad._scaffold.gotoAndStop(6);
+			
+			mPlayer.mPlane.x = mGameWidth/2 - 300;
+			mPlayer.mPlane.y = mGameHeight - mPlayer.mPlane.width/2 - 130;
+			mPlayer.mPlane.rotation -= 4;
+			mPlayer.mPlane.stop();
 		}
 				
 		private function bindViews():void {
 			mSkyBG = new sky_bg();
-			mSkyBG.x = 0;
-			mSkyBG.y = mGameHeight - mSkyBG.height;
-			
 			mUIBar = new ui_bar();
 			mUIBar.x = 0;
 			mUIBar.y = 0;
@@ -77,16 +97,7 @@ package {
 			mButtonBar.x = mGameWidth - mButtonBar.width - 16;
 			mButtonBar.y = mGameHeight - mButtonBar.height - 12;
 			
-			mPlayer.mPlane;
-			mPlayer.mPlane.x = mGameWidth/2;
-			mPlayer.mPlane.y = mGameHeight;
-			mPlayer.mPlane.stop();
-			
-			mPlayer.mLaunchPad;
-			mPlayer.mLaunchPad.x = mPlayer.mLaunchPad.width/2 + 30;
-			mPlayer.mLaunchPad.y = mSkyBG.height - mPlayer.mLaunchPad.height - 40;
-			mPlayer.mLaunchPad._scaffold.stop();
-			//mPlayer.mLaunchPad._scaffold.addEventListener(type, listener);
+			reset();
 		}
 		
 		private function populateViews():void {
@@ -101,19 +112,43 @@ package {
 		public function onKeyDown(event:KeyboardEvent):void {
 			switch (event.keyCode) {
 				case Keyboard.LEFT: {
-					mPlayer.mVx = mPlayer.mVx - 1 >= 0 ? mPlayer.mVx - 1 : 0;
+					if (mPlayer.isLaunch()) {
+						
+					} else {
+						mPlayer.mVx = mPlayer.mVx - 1 >= 0 ? mPlayer.mVx - 1 : 0;
+					}
 					break;
 				}
 				case Keyboard.RIGHT: {
-					mPlayer.mVx += 1;
+					if (mPlayer.isLaunch()) {
+						
+					} else {
+						mPlayer.mVx += 1;
+					}
 					break;
 				}
 				case Keyboard.UP: {
-					mPlayer.mVy += 1;
+					if (mPlayer.isLaunch()) {
+						
+					} else {
+						mPlayer.mVy += 1;
+					}
 					break;
 				}
 				case Keyboard.DOWN: {
-					mPlayer.mVy -= 1;
+					if (mPlayer.isLaunch()) {
+						
+					} else {
+						mPlayer.mVy -= 1;
+					}
+					break;
+				}
+				case Keyboard.SPACE: {
+					if (mPlayer.isLaunch()) {
+						mPlayer._GameState = mPlayer._Plane;
+						mPlayer.mVx = 10;
+						mPlayer.mVy = 15;
+					}
 					break;
 				}
 				default: break;
@@ -124,7 +159,6 @@ package {
 			switch (event.keyCode) {
 				case Keyboard.LEFT: {}
 				case Keyboard.RIGHT: {
-					//mPlayer.mVx = 0;
 					break;
 				}
 				case Keyboard.UP: {}
@@ -138,12 +172,17 @@ package {
 		public function onEnterFrame(event:Event):void {
 			updateUI();
 			mGameEngine.tickBackground(mSkyBG,mPlayer);
-			
+			// logic handle of launchPad
+			mGameEngine.parallaxScreen(mPlayer.mLaunchPad, 1, mPlayer.mVx);
+			if (mPlayer.isPlane()) {
+				if (mPlayer.mLaunchPad.x < mPlayer.mLaunchPad.x + mPlayer.mLaunchPad.width) {
+					mSkyBG.removeChild(mPlayer.mLaunchPad);
+				}
+			}
 		}
 		
 		public function updateUI():void {
 			//mPlayer.mDist += mPlayer.mVx/stage.frameRate;
-			
 			mUIBar._spdText.text = mPlayer.mVx.toFixed(2)+"m/s";
 			mUIBar._altText.text = mPlayer.mAlt.toFixed(2)+"m";
 			mUIBar._dstText.text = mPlayer.mDist.toFixed(2)+"m";

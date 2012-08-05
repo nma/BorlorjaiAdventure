@@ -10,21 +10,21 @@ package com.nma.borlorjai {
 		public var mMaxAltitude:Number;
 		
 		// game dependant variables
-		private static var mInstance:Engine;
-		private static var allowInstantiation:Boolean;
+		private static var _instance:Engine;
+		private static var _allowInstantiation:Boolean;
 		
 		// implement static singleton
 		public static function getInstance():Engine {
-			if (mInstance == null) {
-				allowInstantiation = true;
-				mInstance = new Engine();
-				allowInstantiation = false;
+			if (_instance == null) {
+				_allowInstantiation = true;
+				_instance = new Engine();
+				_allowInstantiation = false;
 			}
-			return mInstance;
+			return _instance;
 		}
 		
 		public function Engine() {
-			if (!allowInstantiation) {
+			if (!_allowInstantiation) {
 				throw new Error("Error: Instantiation failed: Use Player.getInstance() instead of new.");
 			} else {
 				init();
@@ -48,6 +48,9 @@ package com.nma.borlorjai {
 		}
 		
 		public function gravity(user:Player):void {
+			if (user.isLaunch) {
+				return;
+			}
 			user.mVy -= (10/24 - user.mAD);
 			user.mPlane.y -= user.mVy;
 			

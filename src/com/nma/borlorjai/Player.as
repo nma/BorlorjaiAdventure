@@ -1,6 +1,5 @@
 package com.nma.borlorjai 
 {
-	import flashx.textLayout.formats.Float;
 	/**
 	 * @author Nick
 	 */
@@ -28,21 +27,27 @@ package com.nma.borlorjai
 		
 		public var mAD:Number; // aerodynamic modifier
 		
-		private static var mInstance:Player;
-		private static var allowInstantiation:Boolean;
+		public var _LaunchPad:int = 0;
+		public var _Plane:int = 1;
+		public var _GameState:int = 0;
+		
+		public var mPlayerFuel:int;
+		
+		private static var _instance:Player;
+		private static var _allowInstantiation:Boolean;
 		// Singleton Class 
 		public static function getInstance():Player {
-			if (mInstance == null) {
-				allowInstantiation = true;
-				mInstance = new Player();
-				allowInstantiation = true;
+			if (_instance == null) {
+				_allowInstantiation = true;
+				_instance = new Player();
+				_allowInstantiation = true;
 			}
-			return mInstance;
+			return _instance;
 		}
 		
 		public function Player():void {
 			// this shouldn't be necessary unless they fake out the compiler:
-			if (!allowInstantiation) {
+			if (!_allowInstantiation) {
 				throw new Error("Error: Instantiation failed: Use Player.getInstance() instead of new.");
 			} else {
 				init();
@@ -58,6 +63,7 @@ package com.nma.borlorjai
 			mDist = 0.0;
 			mAlt = 0.0;
 			
+			// singleton instances, no multiple instances of planes or laundpads
 			mPlane = new Plane();
 			mLaunchPad = new LaunchPad();
 			
@@ -72,5 +78,12 @@ package com.nma.borlorjai
 			return mVy;
 		}
 		
+		public function isLaunch():Boolean {
+			return _GameState == _LaunchPad;
+		}
+		
+		public function isPlane():Boolean {
+			return _GameState == _Plane;
+		}
 	}
 }

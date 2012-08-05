@@ -1,6 +1,6 @@
 package com.nma.borlorjai.puzzle {
 
-	import com.nma.borlorjai.GameAssets;
+	import com.nma.borlorjai.asset.GameAssets;
 
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
