@@ -43,32 +43,43 @@ package com.nma.borlorjai {
 			this.parallaxScreen(obj._skyline,2,user.mVx);
 			this.parallaxScreen(obj._clouds,3.5,user.mVx);
 			this.parallaxScreen(obj._stars,15,user.mVx);
-			this.gravity(user);
-			this.adjustHeight(obj,user.mAlt);
+			this.gravity(user, obj);
+			
 		}
 		
-		public function gravity(user:Player):void {
+		public function gravity(user:Player, sky:sky_bg ):void {
 			if (user.isLaunch()) {
 				return;
 			}
+			var mGroundHeight:Number = (user.mPlane.width/2 - 5);
+			var mSkyMaxOffset:Number = (sky.height - mHeight);
+			
+			// gravity application
 			user.mVy -= (10/24 - user.mAD);
 			user.mPlane.y -= user.mVy;
 			
 			// plane travelling
-			if (user.mPlane.y - user.mVy >= (mHeight - user.mPlane.width/2 - 15)) {
+			if (user.mPlane.y - user.mVy >= mHeight - mGroundHeight) {
+				// keep plane here
 				user.mVy = 0;
-				user.mPlane.y = mHeight - user.mPlane.width/2 - 15;
+				user.mPlane.y = mHeight - mGroundHeight;
+				
 			} else if (user.mPlane.y - user.mVy <= mHeight/2) {
 				user.mPlane.y = mHeight/2;
 			}
 			
+			// adjust height of sky bg relative to plane
+			this.adjustHeight(sky,user.mVy);
+			var planeFromBottom:Number = mHeight - user.mPlane.y;
+			var altRatio:Number = ( ( (mSkyMaxOffset + sky.y ) - mGroundHeight ) + planeFromBottom ) / ( sky.height - mGroundHeight );
+			user.mAlt = Math.abs( altRatio * mMaxAltitude );
+
 			// set plane rotation
 			var rotation:Number = 0;
 			if (user.mVy != 0) {
 				rotation = Math.atan((user.mVx)/(-user.mVy)) * (180/Math.PI);
 			}
 			user.mDist = rotation;
-			user.mAlt = user.mVy;
 			//user.mPlane.rotation = rotation;
 		}
 		

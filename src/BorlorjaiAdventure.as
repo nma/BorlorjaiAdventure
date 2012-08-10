@@ -1,5 +1,4 @@
 package {
-	import flash.globalization.NumberFormatter;
 	import com.nma.borlorjai.Engine;
 	import com.nma.borlorjai.scene.GameSceneManager;
 	import com.nma.borlorjai.Player;
@@ -42,11 +41,13 @@ package {
 		}
 		
 		private function init():void {
+			// player stuff
+			
 			// set game size
 			mGameEngine.mWidth = mGameWidth = stage.stageWidth;
 			mGameEngine.mHeight = mGameHeight = stage.stageHeight;
 			mGameEngine.mFrameRate = stage.frameRate;
-			mGameEngine.mMaxAltitude = 125;
+			mGameEngine.mMaxAltitude = 150;
 			
 			// stage settings
 			stage.align = StageAlign.TOP_LEFT;
@@ -179,6 +180,7 @@ package {
 		
 		public function updateUI():void {
 			//mPlayer.mDist += mPlayer.mVx/stage.frameRate;
+
 			mUIBar._spdText.text = mPlayer.mVx.toFixed(2)+"m/s";
 			mUIBar._altText.text = mPlayer.mAlt.toFixed(2)+"m";
 			mUIBar._dstText.text = mPlayer.mDist.toFixed(2)+"m";
