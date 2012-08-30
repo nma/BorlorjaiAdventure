@@ -14,7 +14,7 @@ package com.nma.borlorjai {
 		private var _barWidth:Number;
 		private var _direction:int = 1;
 		public var percent:int = 0;
-		
+		private var pctTick:int = 10;
 		
 		/**
 		 * Called by engine to draw progress bar and stuff.
@@ -53,12 +53,12 @@ package com.nma.borlorjai {
 		public function redrawBar():void {
 			switch (_STATE){
 				case BAR: {
-					if (percent + 1 == 100) {
+					if (percent + pctTick >= 100) {
 						_direction = -1; 
-					} else if (percent - 1 == 1) {
+					} else if (percent - pctTick <= 1) {
 						_direction = 1;
 					}
-					percent += _direction;
+					percent += _direction*pctTick;
 					
 					_progressBar.width = (percent/100) * _barWidth;
 					

@@ -68,7 +68,7 @@ package {
 		}
 		
 		public function reset():void {
-			mPlayer._GameState = mPlayer.LAUNCH_PAD;
+			mPlayer._GameState = Player.LAUNCH_PAD;
 			
 			mSkyBG.x = 0;
 			mSkyBG.y = mGameHeight - mSkyBG.height;
@@ -141,7 +141,7 @@ package {
 				}
 				case Keyboard.SPACE: {
 					if (mPlayer.isLaunch()) {
-						mPlayer._GameState = mPlayer.PLANE;
+						mPlayer._GameState = Player.PLANE;
 						mPlayer.mLaunchPad.launchPlane();
 						mPlayer.mVx += 10;
 						mPlayer.mVy += 20 + 10 * (mPlayer.LaunchPadLevel/6);

@@ -30,8 +30,8 @@ package com.nma.borlorjai
 		
 		public var mAD:Number; // aerodynamic modifier
 		
-		public var LAUNCH_PAD:int = 0;
-		public var PLANE:int = 1;
+		public static var LAUNCH_PAD:int = 0;
+		public static var PLANE:int = 1;
 		public var _GameState:int = 0;
 		
 		

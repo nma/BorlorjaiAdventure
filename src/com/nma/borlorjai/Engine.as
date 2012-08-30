@@ -45,6 +45,9 @@ package com.nma.borlorjai {
 			this.parallaxScreen(obj._stars,15,user.mVx);
 			this.gravity(user, obj);
 			
+			if (user._GameState == Player.LAUNCH_PAD) {
+				user.mLaunchPad.redrawBar();
+			}
 		}
 		
 		public function gravity(user:Player, sky:sky_bg ):void {
