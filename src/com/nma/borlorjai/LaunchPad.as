@@ -14,7 +14,7 @@ package com.nma.borlorjai {
 		private var _barWidth:Number;
 		private var _direction:int = 1;
 		public var percent:int = 0;
-		private var pctTick:int = 10;
+		private var pctTick:int = 4;
 		
 		/**
 		 * Called by engine to draw progress bar and stuff.
