@@ -17,6 +17,9 @@ package com.nma.borlorjai
 		// player accessibles
 		public var mPlayerStage:int;
 		public var mPlayerMoney:int;
+		public var mPlayerFuel:int;
+		public var LaunchPadLevel:int;
+		
 		public var mPlane:Plane;
 		public var mLaunchPad:LaunchPad;
 		
@@ -27,11 +30,10 @@ package com.nma.borlorjai
 		
 		public var mAD:Number; // aerodynamic modifier
 		
-		public var _LaunchPad:int = 0;
-		public var _Plane:int = 1;
+		public var LAUNCH_PAD:int = 0;
+		public var PLANE:int = 1;
 		public var _GameState:int = 0;
 		
-		public var mPlayerFuel:int;
 		
 		private static var _instance:Player;
 		private static var _allowInstantiation:Boolean;
@@ -57,6 +59,7 @@ package com.nma.borlorjai
 		private function init():void {
 			mPlayerStage = 0;
 			mPlayerMoney = 0;
+			LaunchPadLevel = 1;
 			
 			mVx = 0.0;
 			mVy = 0.0;
@@ -79,11 +82,11 @@ package com.nma.borlorjai
 		}
 		
 		public function isLaunch():Boolean {
-			return _GameState == _LaunchPad;
+			return _GameState == LAUNCH_PAD;
 		}
 		
 		public function isPlane():Boolean {
-			return _GameState == _Plane;
+			return _GameState == PLANE;
 		}
 	}
 }

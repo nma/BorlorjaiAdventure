@@ -1,7 +1,7 @@
 package {
 	import com.nma.borlorjai.Engine;
-	import com.nma.borlorjai.scene.GameSceneManager;
 	import com.nma.borlorjai.Player;
+	import com.nma.borlorjai.scene.GameSceneManager;
 
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
@@ -68,7 +68,7 @@ package {
 		}
 		
 		public function reset():void {
-			mPlayer._GameState = mPlayer._LaunchPad;
+			mPlayer._GameState = mPlayer.LAUNCH_PAD;
 			
 			mSkyBG.x = 0;
 			mSkyBG.y = mGameHeight - mSkyBG.height;
@@ -76,7 +76,8 @@ package {
 			mPlayer.mLaunchPad.x = mPlayer.mLaunchPad.width/2 + 30;
 			mPlayer.mLaunchPad.y = mSkyBG.height - mPlayer.mLaunchPad.height - 50;
 			mPlayer.mLaunchPad._scaffold.rotation -= 4;
-			mPlayer.mLaunchPad._scaffold.gotoAndStop(6);
+			mPlayer.mLaunchPad._scaffold.gotoAndStop(1);
+			mPlayer.mLaunchPad.startBarGame();
 			
 			mPlayer.mPlane.x = mGameWidth/2 - 300;
 			mPlayer.mPlane.y = mGameHeight - mPlayer.mPlane.width/2 - 130;
@@ -140,9 +141,10 @@ package {
 				}
 				case Keyboard.SPACE: {
 					if (mPlayer.isLaunch()) {
-						mPlayer._GameState = mPlayer._Plane;
+						mPlayer._GameState = mPlayer.PLANE;
+						mPlayer.mLaunchPad.launchPlane();
 						mPlayer.mVx += 10;
-						mPlayer.mVy += 20;
+						mPlayer.mVy += 20 + 10 * (mPlayer.LaunchPadLevel/6);
 					}
 					break;
 				}
