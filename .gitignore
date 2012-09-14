@@ -1,3 +1,5 @@
 bin/
 .project/
 .settings/
+.settings/com.powerflasher.fdt.classpath
+.settings/com.powerflasher.fdt.core.prefs
