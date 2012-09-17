@@ -28,6 +28,8 @@ package {
 		
 		public var gameSceneManagerInstance:GameSceneManager;
 		
+		private var mStarHolder:Array;
+		
 		public function BorlorjaiAdventure():void {
 			super();
 			// get game instances
@@ -48,6 +50,7 @@ package {
 			mGameEngine.mHeight = mGameHeight = stage.stageHeight;
 			mGameEngine.mFrameRate = stage.frameRate;
 			mGameEngine.mMaxAltitude = 150;
+			mGameEngine.mDrag = 1/24;
 			
 			// stage settings
 			stage.align = StageAlign.TOP_LEFT;
@@ -64,7 +67,10 @@ package {
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
-		
+			
+			// Handling for Stars
+			mStarHolder = [];
+			
 		}
 		
 		public function reset():void {
@@ -170,14 +176,31 @@ package {
 			updateUI();
 			mGameEngine.tickBackground(mSkyBG,mPlayer);
 			// logic handle of launchPad
-			if (mPlayer.isPlane()) {
-				mGameEngine.parallaxScreen(mPlayer.mLaunchPad, 1, mPlayer.mVx);
-				var padX:Number = mPlayer.mLaunchPad.x; 
-				var padW:Number = mPlayer.mLaunchPad.width;
-				if (padX < padX + padW) {
-					mSkyBG.removeChild(mPlayer.mLaunchPad);
+			switch (mPlayer.playerState()) {
+				case Player.PLANE: {
+					var padX:Number = mPlayer.mLaunchPad.x; 
+					var padW:Number = mPlayer.mLaunchPad.width;
+					if (padX < padX + padW) {
+						// drop the launch pad if it moves out of the screen
+						mSkyBG.removeChild(mPlayer.mLaunchPad);
+					} else {
+						// move the launchpad
+						mGameEngine.parallaxScreen(mPlayer.mLaunchPad, 1, mPlayer.mVx);
+					}
+					
+					//generateAndMoveStars();
+					break;
 				}
+				case Player.LAUNCH_PAD: {
+					// do nothing
+					break;
+				}
+				default:break;
 			}
+		}
+		
+		public function generateAndMoveStars():void {
+			var numberOfStars:int = Math.random();
 		}
 		
 		public function updateUI():void {

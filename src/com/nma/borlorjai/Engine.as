@@ -8,6 +8,7 @@ package com.nma.borlorjai {
 		public var mHeight:int;
 		public var mFrameRate:int;
 		public var mMaxAltitude:Number;
+		public var mDrag:Number;
 		
 		// game dependant variables
 		private static var _instance:Engine;
@@ -44,13 +45,15 @@ package com.nma.borlorjai {
 			this.parallaxScreen(obj._clouds,3.5,user.mVx);
 			this.parallaxScreen(obj._stars,15,user.mVx);
 			this.gravity(user, obj);
+			this.applyResistanceOn(user);
 			
+			// special case to check for when the game resets
 			if (user._GameState == Player.LAUNCH_PAD) {
 				user.mLaunchPad.redrawBar();
 			}
 		}
 		
-		public function gravity(user:Player, sky:sky_bg ):void {
+		private function gravity(user:Player, sky:sky_bg ):void {
 			if (user.isLaunch()) {
 				return;
 			}
@@ -58,7 +61,7 @@ package com.nma.borlorjai {
 			var mSkyMaxOffset:Number = (sky.height - mHeight);
 			
 			// gravity application
-			user.mVy -= (10/24 - user.mAD);
+			user.mVy -= (11/24 - user.mAD);
 			user.mPlane.y -= user.mVy;
 			
 			// plane travelling
@@ -94,7 +97,7 @@ package com.nma.borlorjai {
 			} 
 		}
 		
-		public function adjustHeight(obj:MovieClip, alt:Number):void {
+		private function adjustHeight(obj:MovieClip, alt:Number):void {
 			obj.y = (mHeight - obj.height) * (1 - (alt / mMaxAltitude)); 
 			
 			if (obj.y + obj.height <= mHeight) {
@@ -102,6 +105,15 @@ package com.nma.borlorjai {
 			} else if (obj.y >= 0) {
 				obj.y = 0;
 			}
+		}
+		
+		private function applyResistanceOn(user:Player):void {
+			// mDrag setting subtract arbitrary aerodynamic modifier
+			user.mVx -= (mDrag - user.mAD);
+			// if hit ground, add additional ground friction
+			if (user.mAlt == 0) user.mVx - 2;
+			// make sure mVx does not go negative.
+			user.mVx = user.mVx < 0 ? 0: user.mVx;
 		}
 		
 	}

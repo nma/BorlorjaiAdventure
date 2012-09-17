@@ -81,6 +81,11 @@ package com.nma.borlorjai
 			return mVy;
 		}
 		
+		
+		public function playerState():int {
+			return _GameState;
+		}
+		
 		public function isLaunch():Boolean {
 			return _GameState == LAUNCH_PAD;
 		}
